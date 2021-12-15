@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const { User, Cart } = require('../models/models')
 const {validationResult} = require('express-validator')
-const {userService} = require('../service/user-service')
+const userService = require('../service/user-service')
 
 const generateJWT = (id, email, role) => {
   return jwt.sign(
@@ -22,9 +22,7 @@ class UserController {
       }
 
       const { email, password, role } = req.body
-
       const userData = await userService.registration(email, password, role)
-
       //httpOnly: true - cookie нельзя будет изменить внутри браузера
       res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
 

@@ -13,13 +13,13 @@ class TokenService {
 
   //----Запишем refreshToken в БД----//
   async saveToken(userId, refreshToken) {
-    const tokenData = await Token.findOne({ where: { user: userId } })
+    const tokenData = await Token.findOne({ where: { userId: userId } })
     if (tokenData) {
       tokenData.refreshToken = refreshToken
       return tokenData.save()
     }
 
-    const token = await Token.create({user: userId, refreshToken})
+    const token = await Token.create({userId: userId, refreshToken})
     return token
   }
 

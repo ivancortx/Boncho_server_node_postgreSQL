@@ -8,7 +8,9 @@ const ApiError = require('../error/ApiError')
 
 class UserService {
   async registration(email, password, role) {
-    const candidate = await User.findOne({ where: { email }})
+
+    const candidate = await User.findOne({where: {email: email}})
+
     if (candidate) {
       throw ApiError.badRequest(`Пользователь с почтовым ящиком ${email} уже существует`)
     }
@@ -18,10 +20,12 @@ class UserService {
     const user = await User.create({ email, password: hashPassword, activationLink, role })  //сохраняем user-а в БД
 
     //отправляем на указаную почту ссылку с кл активации
-    await mailService.sendActivationMail(email, `${process.env.API_URL}/api/user/activate/${activationLink}`)
+    // await mailService.sendActivationMail(email, `${process.env.API_URL}/api/user/activate/${activationLink}`)
 
-    const userDto = new UserDto(user) // id, email, isActivated
+    const userDto = new UserDto(user.dataValues) // id, email, isActivated
+
     const tokens = tokenService.generateToken({ ...userDto })
+
     await tokenService.saveToken(userDto.id, tokens.refreshToken)
 
     return {

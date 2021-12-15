@@ -6,13 +6,13 @@ const User = sequelize.define('user', {
   email: {type: DataTypes.STRING, unique: true},
   password: {type: DataTypes.STRING},
   isActivate: {type: DataTypes.BOOLEAN, defaultValue: false},
-  activationLink: {type: String},
+  activationLink: {type: DataTypes.STRING, defaultValue: ''},
   role: {type: DataTypes.STRING, defaultValue: 'USER'}
 })
 
 const Token = sequelize.define('token', {
   id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
-  userData: {type: DataTypes.STRING, allowNull: false},
+  userId: {type: DataTypes.INTEGER, allowNull: false},
   refreshToken: {type: DataTypes.STRING, require: true}
 })
 
