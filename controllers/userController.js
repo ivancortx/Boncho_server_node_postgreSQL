@@ -1,17 +1,6 @@
 const ApiError = require('../error/ApiError')
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
-const { User, Cart } = require('../models/models')
 const {validationResult} = require('express-validator')
 const userService = require('../service/user-service')
-
-const generateJWT = (id, email, role) => {
-  return jwt.sign(
-    { id, email, role },
-    process.env.SECRET_KEY,
-    { expiresIn: '24h' }
-  )
-}
 
 class UserController {
   async registration(req, res, next) {
@@ -34,25 +23,39 @@ class UserController {
   }
 
   async login(req, res, next) {
-    const { email, password } = req.body
-    const user = await User.findOne({ where: { email } })
-    if (!user) {
-      return next(ApiError.internal('Пользователь не найден'))
-    }
+    try {
+      const {email, password} = req.body
+      const userData = await userService.login(email, password)
 
-    const hashPassword = bcrypt.compareSync(password, user.password)
-    if (!hashPassword) {
-      return next(ApiError.internal('Пароль не совпадает'))
-    }
+      //httpOnly: true - cookie нельзя будет изменить внутри браузера
+      res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
 
-    const token = generateJWT(user.id, email, user.role)
-    return res.json({ token })
+      return res.json({ accessToken: userData.accessToken, user: userData.user })
+    }catch (e) {
+      next(e)
+    }
   }
 
-  async check(req, res, next) {
-    const token = generateJWT(req.user.id, req.user.email, req.user.role)
-    console.log(req.user)
-    return res.json({ token })
+  async logout (req, res, next) {
+    try {
+      const {refreshToken} = req.cookies
+      const token = await userService.logout(refreshToken)
+      res.clearCookie('refreshToken')  //уераем токен из куки
+      return res.json(token)  //*для наглядности
+    }catch (e) {
+      next(e)
+    }
+  }
+
+  async refresh (req, res, next) {
+    try {
+      const {refreshToken} = req.cookies
+      const userData = await userService.refresh(refreshToken)
+      res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
+      return res.json({ accessToken: userData.accessToken, user: userData.user })
+    }catch (e) {
+      next(e)
+    }
   }
 }
 
