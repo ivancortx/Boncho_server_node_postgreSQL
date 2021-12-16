@@ -16,9 +16,13 @@ class CategoryController {
    }
   }
 
-  async getAll(req, res) {
-    const types = await Category.findAll()
-    return res.json(types)
+  async getAll(req, res, next) {
+    try {
+      const types = await Category.findAll()
+      return res.json(types)
+    }catch (e) {
+      next(e)
+    }
   }
 }
 

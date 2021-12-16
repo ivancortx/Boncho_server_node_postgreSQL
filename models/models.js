@@ -46,7 +46,7 @@ const Product = sequelize.define('product', {
   startDate: {type: DataTypes.STRING, allowNull: false},
   endDate: {type: DataTypes.STRING, allowNull: false},
   priceStep: {type: DataTypes.INTEGER, allowNull: false},
-  img: {type: DataTypes.STRING, allowNull: false},
+  img: {type: DataTypes.STRING, allowNull: false, defaultValue: ''},
   percentTimeStep: {type: DataTypes.INTEGER, allowNull: false},
   seePrice: {type: DataTypes.INTEGER, allowNull: false},
   startPrice: {type: DataTypes.INTEGER, allowNull: false},
