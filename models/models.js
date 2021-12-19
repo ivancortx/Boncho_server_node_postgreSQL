@@ -16,7 +16,7 @@ const Token = sequelize.define('token', {
   refreshToken: {type: DataTypes.STRING, require: true}
 })
 
-const Cart = sequelize.define('basket', {
+const Cart = sequelize.define('cart', {
   id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true}
 })
 
@@ -25,7 +25,7 @@ const Wallet = sequelize.define('wallet', {
 })
 
 const CartProduct = sequelize.define('cart_product', {
-  id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true}
+  id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
 })
 
 const CurrentPrice = sequelize.define('current_price', {
@@ -72,11 +72,11 @@ Wallet.belongsTo(User)
 Cart.hasMany(CartProduct)
 CartProduct.belongsTo(Cart)
 
-CartProduct.hasOne(Product)
-Product.belongsTo(CartProduct)
+Product.hasOne(CartProduct)
+CartProduct.belongsTo(Product)
 
-CurrentPrice.hasOne(Product)
-Product.belongsTo(CurrentPrice)
+Product.hasOne(CurrentPrice)
+CurrentPrice.belongsTo(Product)
 
 Category.hasMany(Product)
 Product.belongsTo(Category)

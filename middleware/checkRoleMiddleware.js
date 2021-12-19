@@ -5,7 +5,7 @@ module.exports = function (role) {
     if (req.method === 'OPTIONS') {
       next()
     }
-
+    console.log('fdf')
     try {
       const token = req.headers.authorization.split(' ')[1]
       if (!token) {

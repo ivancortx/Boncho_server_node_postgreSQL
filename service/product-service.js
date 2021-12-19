@@ -28,61 +28,6 @@ class ProductService {
     }
     return products
   }
-
-  async login(email, password) {
-    const user = await User.findOne({ where: { email } })
-    if (!user) {
-      throw ApiError.badRequest('Юзер не найден')
-    }
-
-    const isPassEquals = await bcrypt.compare(password, user.password)
-    if (!isPassEquals) {
-      throw ApiError.badRequest('пароль не совпадает')
-    }
-
-    const userDto = new UserDto(user)
-    const tokens = tokenService.generateToken({ ...userDto })
-    await tokenService.saveToken(userDto.id, tokens.refreshToken)
-
-    return {
-      ...tokens, // accessToken, refreshToken
-      user: userDto  // id, email, isActivated
-    }
-  }
-
-  async logout(refreshToken) {
-    const token = await tokenService.removeToken(refreshToken)
-    return token
-  }
-
-  async refresh(refreshToken) {
-    if (!refreshToken) {
-      throw ApiError.UnauthorizedError()
-    }
-
-    //валидируем токен который пришел с фронта
-    const userData = tokenService.validateRefreshToken(refreshToken)
-    //получаем токен с БД
-    const tokenFromDb = await tokenService.findToken(refreshToken)
-    if (!userData || !tokenFromDb) {
-      throw ApiError.UnauthorizedError()
-    }
-
-    //обновляем данные пользователя
-    const user = await User.findOne({
-      where: {
-        id: userData.id
-      }
-    })
-
-    const userDto = new UserDto(user)
-
-    //генерируем новые токены
-    const tokens = tokenService.generateToken({ ...userDto })
-
-    await tokenService.saveToken(userDto.id, tokens.refreshToken)
-    return { ...tokens, user: userDto }
-  }
 }
 
 module.exports = new ProductService()

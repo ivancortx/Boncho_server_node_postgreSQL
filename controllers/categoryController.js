@@ -9,6 +9,7 @@ class CategoryController {
      if (categoryCandidat) {
        throw ApiError.forbidden('Такая категория уже существует}')
      }
+     console.log('ddd')
      const category = await Category.create({name})
      return res.json(category)
    } catch (e) {

@@ -33,8 +33,7 @@ class ProductController {
 
   async getOne(req, res, next) {
     try {
-      const { id } = req.headers
-      console.log(id)
+      const { id } = req.body
       const product = await ProductService.getOne(id)
       return res.json(product)
     } catch (e) {
