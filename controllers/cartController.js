@@ -18,13 +18,15 @@ class CartController {
    }
   }
 
-  async getAll(req, res) {
-    const user = req.user
-    const products = await CartService.getAllProductsFromCart(user.id)
-    res.json(products)
+  async getAll(req, res, next) {
+    try {
+      const user = req.user
+      const products = await CartService.getAllProductsFromCart(user.id)
+      res.json(products)
 
-    // const brands = await Cart.findAll()
-    // return res.json(brands)
+    } catch (e) {
+      next(ApiError.internal(e.message))
+    }
   }
 }
 

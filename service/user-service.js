@@ -1,4 +1,4 @@
-const { User } = require('../models/models')
+const { User, Wallet } = require('../models/models')
 const bcrypt = require('bcrypt')
 const uuid = require('uuid')
 const mailService = require('./mail-service')
@@ -18,9 +18,12 @@ class UserService {
     const hashPassword = await bcrypt.hash(password, 3)
     const activationLink = uuid.v4() //генерируем ссылку для активации
     const user = await User.create({ email, password: hashPassword, activationLink, role })  //сохраняем user-а в БД
-
+    console.log(user)
     //отправляем на указаную почту ссылку с кл активации
     // await mailService.sendActivationMail(email, `${process.env.API_URL}/api/user/activate/${activationLink}`)
+
+    //создадим пустой кошелек
+    await Wallet.create( {userId: user.id})
 
     const userDto = new UserDto(user.dataValues) // id, email, isActivated
 

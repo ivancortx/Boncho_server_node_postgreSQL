@@ -21,7 +21,8 @@ const Cart = sequelize.define('cart', {
 })
 
 const Wallet = sequelize.define('wallet', {
-  id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true}
+  id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+  cash: {type: DataTypes.INTEGER, defaultValue: 0}
 })
 
 const CartProduct = sequelize.define('cart_product', {
