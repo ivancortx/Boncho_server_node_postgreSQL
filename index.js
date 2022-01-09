@@ -8,10 +8,18 @@ const fileUpload = require('express-fileupload')
 const router = require('./routes/index')
 const errorHandler = require('./middleware/ErrorHandlingMiddleware')
 const path = require('path')
+const swaggerUi = require('swagger-ui-express')
+const swaggerJsDoc = require('swagger-jsdoc')
+const swaggerOptions = require('./swagger/swaggerOptions')
 
 const PORT = process.env.PORT || 5000
 
+const specs = swaggerJsDoc(swaggerOptions)
+
 const app = express()
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs))
+
 app.use(cookieParser())
 app.use(cors())
 app.use(express.json())
@@ -21,6 +29,8 @@ app.use('/api', router)
 
 //обработка ошибок - последний middleware
 app.use(errorHandler)
+
+
 
 const start = async () => {
   try {
