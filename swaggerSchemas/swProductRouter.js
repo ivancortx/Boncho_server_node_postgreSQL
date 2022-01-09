@@ -7,7 +7,6 @@
  *       required:
  *         - name
  *         - description
- *         - isInStock
  *         - startDate
  *         - endDate
  *         - priceStep
@@ -17,6 +16,7 @@
  *         - startPrice
  *         - stepTime
  *         - authorEmail
+ *         - categoryId
  *
  *       properties:
  *         id:
@@ -58,6 +58,9 @@
  *         authorEmail:
  *            type: string
  *            description: Author Email
+ *         categoryId:
+ *            type: number
+ *            description: category id
  *
  *       example:
  *        id: 2
@@ -72,6 +75,7 @@
  *        seePrice: 1200
  *        startPrice: 1200
  *        stepTime: 20
+ *        categoryId: 2
  *        authorEmail: testemail@gmail.com
  */
 
@@ -96,7 +100,7 @@
  *             schema:
  *               type: array
  *               items:
- // *                 $ref: '#/components/schemas/Product'
+ *                 $ref: '#/components/schemas/Product'
  */
 
 /**
@@ -114,6 +118,36 @@
  *     responses:
  *       200:
  *         description: The product was successfully created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Product'
+ *       500:
+ *         description: Some server error
+ */
+
+/**
+ * @swagger
+ * /api/product/product:
+ *   post:
+ *     summary: Get one product by Id
+ *     tags: [Product]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *              type: object
+ *              properties:
+ *                  id:
+ *                      type: integer
+ *                      description: Product id
+ *
+ *              example:
+ *                  id: 2
+ *     responses:
+ *       200:
+ *         description: OK
  *         content:
  *           application/json:
  *             schema:
